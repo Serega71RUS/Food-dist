@@ -34,7 +34,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     //Timer
-    const deadlline = '2021-10-08T18:00';
+    const deadlline = '2021-10-14T18:00';
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -227,27 +227,30 @@ window.addEventListener('DOMContentLoaded', () => {
             `;
             form.insertAdjacentElement('afterend', statusMessage);
 
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-            request.setRequestHeader('Content-type', 'application/json');
-
             const formData = new FormData(form);
             const object = {};
             formData.forEach((value, key) => {
                 object[key] = value;
             });
-            const json = JSON.stringify(object);
-            request.send(json);
-            request.addEventListener('load', () => {
-                if(request.status === 200){
-                    console.log(request.response);
-                    showThanksModal(messsage.success); 
-                    form.reset();
-                    statusMessage.remove();
-                }
-                else{
-                    showThanksModal(messsage.failure);
-                }
+
+            fetch('server.php', {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            })
+            .then(data => data.text())
+            .then(data => {
+                console.log(data);
+                showThanksModal(messsage.success); 
+                statusMessage.remove();
+            })
+            .catch(()=>{
+                showThanksModal(messsage.failure);
+            })
+            .finally(()=>{
+                form.reset();
             });
         });
     }
