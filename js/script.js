@@ -215,6 +215,10 @@ window.addEventListener('DOMContentLoaded', () => {
         postData(item);
     });
 
+    fetch('')
+    .then(data => data.json())
+    .then(res => console.log(res));
+
     function postData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
